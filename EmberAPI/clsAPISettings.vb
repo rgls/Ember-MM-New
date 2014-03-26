@@ -190,6 +190,7 @@ Public Class Settings
     Private _nodisplayfanart As Boolean
     Private _nodisplayposter As Boolean
     Private _nodisplayfanartsmall As Boolean
+    Private _nodisplaybanner As Boolean
     Private _posterglassoverlay As Boolean
     Private _noepfilters As Boolean
     Private _nofilterepisode As Boolean
@@ -310,6 +311,7 @@ Public Class Settings
     Private _showlocktitle As Boolean
     Private _shownfocol As Boolean
     Private _showpostercol As Boolean
+    Private _showbannercol As Boolean
     Private _showposterheight As Integer
     Private _showposterjpg As Boolean
     Private _showbannerjpg As Boolean
@@ -1815,6 +1817,15 @@ Public Class Settings
         End Set
     End Property
 
+    Public Property NoDisplayBanner() As Boolean
+        Get
+            Return Me._nodisplaybanner
+        End Get
+        Set(ByVal value As Boolean)
+            Me._nodisplaybanner = value
+        End Set
+    End Property
+
     Public Property PosterGlassOverlay() As Boolean
         Get
             Return Me._posterglassoverlay
@@ -2913,6 +2924,15 @@ Public Class Settings
         End Set
     End Property
 
+    Public Property ShowBannerCol() As Boolean
+        Get
+            Return Me._showbannercol
+        End Get
+        Set(ByVal value As Boolean)
+            Me._showbannercol = value
+        End Set
+    End Property
+
     Public Property ShowPosterHeight() As Integer
         Get
             Return Me._showposterheight
@@ -3605,6 +3625,7 @@ Public Class Settings
         Me._showdims = False
         Me._nodisplayposter = False
         Me._nodisplayfanartsmall = False
+        Me._nodisplaybanner = False
         Me._nodisplayfanart = False
         Me._posterglassoverlay = False
         Me._outlineforplot = False
@@ -3699,6 +3720,7 @@ Public Class Settings
         Me._episodedashfanart = False
         Me._episodedotfanart = False
         Me._showpostercol = False
+        Me._showbannercol = False
         Me._showfanartcol = False
         Me._shownfocol = False
         Me._seasonpostercol = False

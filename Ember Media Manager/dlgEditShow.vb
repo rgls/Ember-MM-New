@@ -29,6 +29,7 @@ Public Class dlgEditShow
     Private Fanart As New Images With {.IsEdit = True}
     Private lvwActorSorter As ListViewColumnSorter
     Private Poster As New Images With {.IsEdit = True}
+    Private Banner As New Images With {.IsEdit = True}
     Private tmpRating As String
 
 #End Region 'Fields
@@ -155,6 +156,12 @@ Public Class dlgEditShow
 		Me.Poster.Dispose()		'I need the object to call Delete... :) so I dispose the memory structures
     End Sub
 
+    Private Sub btnRemoveBanner_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRemoveBanner.Click
+        Me.pbBanner.Image = Nothing
+        Me.pbBanner.Tag = Nothing
+        Me.Banner.Dispose()     'I need the object to call Delete... :) so I dispose the memory structures
+    End Sub
+
     Private Sub btnRemove_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnRemove.Click
         Me.DeleteActors()
     End Sub
@@ -265,6 +272,58 @@ Public Class dlgEditShow
         End Try
     End Sub
 
+    Private Sub btnSetBannerDL_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSetBannerDL.Click
+        Try
+            Using dImgManual As New dlgImgManual
+                Dim tImage As Images = dImgManual.ShowDialog(Enums.ImageType.Banner)
+                If Not IsNothing(tImage.Image) Then
+                    Banner = tImage
+                    Me.pbBanner.Image = Banner.Image
+                    Me.pbBanner.Tag = Banner
+
+                    Me.lblBannerSize.Text = String.Format(Master.eLang.GetString(269, "Size: {0}x{1}"), Me.pbBanner.Image.Width, Me.pbBanner.Image.Height)
+                    Me.lblBannerSize.Visible = True
+                End If
+            End Using
+        Catch ex As Exception
+            Master.eLog.WriteToErrorLog(ex.Message, ex.StackTrace, "Error")
+        End Try
+    End Sub
+
+    Private Sub btnSetBannerScrape_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSetBannerScrape.Click
+        Dim tImage As Images = ModulesManager.Instance.TVSingleImageOnly(Master.currShow.TVShow.Title, Convert.ToInt32(Master.currShow.ShowID), Master.currShow.TVShow.ID, Enums.TVImageType.ShowBanner, 0, 0, Master.currShow.ShowLanguage, Master.currShow.Ordering, CType(Banner, Images))
+
+        If Not IsNothing(tImage) AndAlso Not IsNothing(tImage.Image) Then
+            Banner = tImage
+            Me.pbBanner.Image = tImage.Image
+            Me.pbBanner.Tag = tImage
+
+            Me.lblBannerSize.Text = String.Format(Master.eLang.GetString(269, "Size: {0}x{1}"), Me.pbBanner.Image.Width, Me.pbBanner.Image.Height)
+            Me.lblBannerSize.Visible = True
+        End If
+    End Sub
+
+    Private Sub btnSetBanner_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSetBanner.Click
+        Try
+            With ofdImage
+                .InitialDirectory = Master.currShow.ShowPath
+                .Filter = "Supported Images(*.jpg, *.jpeg, *.tbn)|*.jpg;*.jpeg;*.tbn|jpeg (*.jpg, *.jpeg)|*.jpg;*.jpeg|tbn (*.tbn)|*.tbn"
+                .FilterIndex = 0
+            End With
+
+            If ofdImage.ShowDialog() = DialogResult.OK Then
+                Banner.FromFile(ofdImage.FileName)
+                Me.pbBanner.Image = Banner.Image
+                Me.pbBanner.Tag = Banner
+
+                Me.lblBannerSize.Text = String.Format(Master.eLang.GetString(269, "Size: {0}x{1}"), Me.pbBanner.Image.Width, Me.pbBanner.Image.Height)
+                Me.lblBannerSize.Visible = True
+            End If
+        Catch ex As Exception
+            Master.eLog.WriteToErrorLog(ex.Message, ex.StackTrace, "Error")
+        End Try
+    End Sub
+
     Private Sub BuildStars(ByVal sinRating As Single)
         '//
         ' Convert # rating to star images
@@ -340,6 +399,10 @@ Public Class dlgEditShow
                 File.Delete(Path.Combine(Master.TempPath, "poster.jpg"))
             End If
 
+            If File.Exists(Path.Combine(Master.TempPath, "banner.jpg")) Then
+                File.Delete(Path.Combine(Master.TempPath, "banner.jpg"))
+            End If
+
             If File.Exists(Path.Combine(Master.TempPath, "fanart.jpg")) Then
                 File.Delete(Path.Combine(Master.TempPath, "fanart.jpg"))
             End If
@@ -367,6 +430,7 @@ Public Class dlgEditShow
 
     Private Sub dlgEditShow_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not Master.eSettings.AllSeasonPosterEnabled Then Me.TabControl1.TabPages.Remove(TabPage4)
+        If Not Master.eSettings.ShowBannerJPG Then Me.TabControl1.TabPages.Remove(TabPage5)
 
         Me.SetUp()
 
@@ -472,6 +536,15 @@ Public Class dlgEditShow
                 .lblPosterSize.Visible = True
             End If
 
+            Banner.FromFile(Master.currShow.ShowBannerPath)
+            If Not IsNothing(Banner.Image) Then
+                .pbBanner.Image = Banner.Image
+                .pbBanner.Tag = Banner
+
+                .lblBannerSize.Text = String.Format(Master.eLang.GetString(269, "Size: {0}x{1}"), .pbBanner.Image.Width, .pbBanner.Image.Height)
+                .lblBannerSize.Visible = True
+            End If
+
             If Master.eSettings.AllSeasonPosterEnabled Then
                 .ASPoster.FromFile(Master.currShow.SeasonPosterPath)
                 If Not IsNothing(.ASPoster.Image) Then
@@ -482,6 +555,16 @@ Public Class dlgEditShow
                 End If
             End If
         End With
+    End Sub
+
+    Private Sub lbGenre_ItemCheck(ByVal sender As Object, ByVal e As System.Windows.Forms.ItemCheckEventArgs) Handles lbGenre.ItemCheck
+        If e.Index = 0 Then
+            For i As Integer = 1 To lbGenre.Items.Count - 1
+                Me.lbGenre.SetItemChecked(i, False)
+            Next
+        Else
+            Me.lbGenre.SetItemChecked(0, False)
+        End If
     End Sub
 
     Private Sub LoadGenres()
@@ -769,9 +852,16 @@ Public Class dlgEditShow
                     Master.currShow.ShowPosterPath = String.Empty
                 End If
 
+                If Not IsNothing(.Banner.Image) Then
+                    Master.currShow.ShowBannerPath = .Banner.SaveAsShowBanner(Master.currShow, "")
+                Else
+                    .Poster.DeleteShowBanner(Master.currShow)
+                    Master.currShow.ShowBannerPath = String.Empty
+                End If
+
                 If Master.eSettings.AllSeasonPosterEnabled Then
                     If Not IsNothing(.ASPoster.Image) Then
-						Master.currShow.SeasonPosterPath = .ASPoster.SaveAsAllSeasonPoster(Master.currShow, "")
+                        Master.currShow.SeasonPosterPath = .ASPoster.SaveAsAllSeasonPoster(Master.currShow, "")
                     Else
                         .ASPoster.DeleteAllSeasonPosters(Master.currShow)
                         Master.currShow.SeasonPosterPath = String.Empty

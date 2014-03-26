@@ -367,6 +367,17 @@ Public Class Images
         End Try
     End Sub
 
+    Public Sub DeleteShowBanner(ByVal mShow As Structures.DBTV)
+        Try
+            Dim tPath As String = mShow.ShowPath
+
+            Delete(Path.Combine(tPath, "banner.jpg"))
+
+        Catch ex As Exception
+            Master.eLog.WriteToErrorLog(ex.Message, ex.StackTrace, "Error")
+        End Try
+    End Sub
+
     Public Sub Dispose() Implements IDisposable.Dispose
 		If Not IsNothing(_ms) Then
 			_ms.Flush()
@@ -1157,20 +1168,39 @@ Public Class Images
 	Public Function SaveAsActorThumb(ByVal actor As MediaContainers.Person, ByVal fpath As String, ByVal aMovie As Structures.DBMovie) As String
 		Dim tPath As String = String.Empty
 
-		If Master.eSettings.VideoTSParentXBMC AndAlso FileUtils.Common.isBDRip(aMovie.Filename) Then
-			tPath = Path.Combine(Path.Combine(Directory.GetParent(fpath).FullName, ".actors"), String.Concat(actor.Name.Replace(" ", "_"), ".jpg"))
-			If Not Directory.Exists(Path.Combine(Directory.GetParent(fpath).FullName, ".actors")) Then Directory.CreateDirectory(Path.Combine(Directory.GetParent(fpath).FullName, ".actors"))
-			If Not File.Exists(tPath) Then ' OrElse (IsEdit OrElse Master.eSettings.OverwritePoster) Then
-				Save(tPath, Master.eSettings.PosterQuality)
-			End If
-		Else
-			tPath = Path.Combine(Path.Combine(fpath, ".actors"), String.Concat(actor.Name.Replace(" ", "_"), ".jpg"))
-			If Not Directory.Exists(Path.Combine(fpath, ".actors")) Then Directory.CreateDirectory(Path.Combine(fpath, ".actors"))
-			If Not File.Exists(tPath) Then ' OrElse (IsEdit OrElse Master.eSettings.OverwritePoster) Then
-				Save(tPath, Master.eSettings.PosterQuality)
-			End If
-		End If
-		'End If
+        'Cocotus 20130905 If FRODO VIDEO_TS Handling is enabled, .actors-folder is now saved in parent directory for DVD folders too (like poster/fanart!) we shouldn't mess with DVD structure!
+        'recommended for Frofo by XBMC developer: 'more here http://forum.xbmc.org/showthread.php?tid=166013 (XBMC Developer statement)
+        If Master.eSettings.VideoTSParentXBMC AndAlso (FileUtils.Common.isBDRip(aMovie.Filename) OrElse FileUtils.Common.isVideoTS(aMovie.Filename)) Then
+            '	If Master.eSettings.VideoTSParentXBMC AndAlso FileUtils.Common.isBDRip(aMovie.Filename) Then
+            tPath = Path.Combine(Path.Combine(Directory.GetParent(fpath).FullName, ".actors"), String.Concat(actor.Name.Replace(" ", "_"), ".jpg"))
+            If Not Directory.Exists(Path.Combine(Directory.GetParent(fpath).FullName, ".actors")) Then Directory.CreateDirectory(Path.Combine(Directory.GetParent(fpath).FullName, ".actors"))
+            If Not File.Exists(tPath) Then ' OrElse (IsEdit OrElse Master.eSettings.OverwritePoster) Then
+                Save(tPath, Master.eSettings.PosterQuality)
+            End If
+        Else
+            tPath = Path.Combine(Path.Combine(fpath, ".actors"), String.Concat(actor.Name.Replace(" ", "_"), ".jpg"))
+            If Not Directory.Exists(Path.Combine(fpath, ".actors")) Then Directory.CreateDirectory(Path.Combine(fpath, ".actors"))
+            If Not File.Exists(tPath) Then ' OrElse (IsEdit OrElse Master.eSettings.OverwritePoster) Then
+                Save(tPath, Master.eSettings.PosterQuality)
+            End If
+        End If
+        'End If
+
+        'old
+        'If Master.eSettings.VideoTSParentXBMC AndAlso FileUtils.Common.isBDRip(aMovie.Filename) Then
+        '	tPath = Path.Combine(Path.Combine(Directory.GetParent(fpath).FullName, ".actors"), String.Concat(actor.Name.Replace(" ", "_"), ".jpg"))
+        '	If Not Directory.Exists(Path.Combine(Directory.GetParent(fpath).FullName, ".actors")) Then Directory.CreateDirectory(Path.Combine(Directory.GetParent(fpath).FullName, ".actors"))
+        '	If Not File.Exists(tPath) Then ' OrElse (IsEdit OrElse Master.eSettings.OverwritePoster) Then
+        '		Save(tPath, Master.eSettings.PosterQuality)
+        '	End If
+        'Else
+        '	tPath = Path.Combine(Path.Combine(fpath, ".actors"), String.Concat(actor.Name.Replace(" ", "_"), ".jpg"))
+        '	If Not Directory.Exists(Path.Combine(fpath, ".actors")) Then Directory.CreateDirectory(Path.Combine(fpath, ".actors"))
+        '	If Not File.Exists(tPath) Then ' OrElse (IsEdit OrElse Master.eSettings.OverwritePoster) Then
+        '		Save(tPath, Master.eSettings.PosterQuality)
+        '	End If
+        'End If
+        ''End If
 		Return tPath
 	End Function
 
@@ -1518,7 +1548,47 @@ Public Class Images
 			Master.eLog.WriteToErrorLog(ex.Message, ex.StackTrace, "Error")
 		End Try
 		Return strReturn
-	End Function
+    End Function
+
+    Public Function SaveAsShowBanner(ByVal mShow As Structures.DBTV, Optional sURL As String = "") As String
+        Dim strReturn As String = String.Empty
+        Dim doResize As Boolean = Master.eSettings.ResizeShowPoster AndAlso (_image.Width > Master.eSettings.ShowPosterWidth OrElse _image.Height > Master.eSettings.ShowPosterHeight)
+
+        Try
+            Dim bPath As String = String.Empty
+
+            If doResize Then
+                ImageUtils.ResizeImage(_image, Master.eSettings.ShowPosterWidth, Master.eSettings.ShowPosterHeight)
+            End If
+
+            Try
+                Dim params As New List(Of Object)(New Object() {Enums.TVImageType.ShowBanner, mShow, New List(Of String)})
+                Dim doContinue As Boolean = True
+                ModulesManager.Instance.RunGeneric(Enums.ModuleEventType.TVImageNaming, params, doContinue)
+                For Each s As String In DirectCast(params(2), List(Of String))
+                    If Not File.Exists(s) OrElse (IsEdit OrElse Master.eSettings.OverwriteShowPoster) Then
+                        Save(s, Master.eSettings.SeasonFanartQuality, sURL, doResize)
+                        If String.IsNullOrEmpty(strReturn) Then strReturn = s
+                    End If
+                Next
+                If Not doContinue Then Return strReturn
+            Catch ex As Exception
+                Master.eLog.WriteToErrorLog(ex.Message, ex.StackTrace, "Error")
+            End Try
+
+            If Master.eSettings.ShowBannerJPG Then
+                bPath = Path.Combine(mShow.ShowPath, "banner.jpg")
+                If Not File.Exists(bPath) OrElse (IsEdit OrElse Master.eSettings.OverwriteShowPoster) Then
+                    Save(bPath, Master.eSettings.ShowPosterQuality, sURL, doResize)
+                    strReturn = bPath
+                End If
+            End If
+
+        Catch ex As Exception
+            Master.eLog.WriteToErrorLog(ex.Message, ex.StackTrace, "Error")
+        End Try
+        Return strReturn
+    End Function
 
     Public Sub SaveFAasET(ByVal faPath As String, ByVal inPath As String)
         Dim iMod As Integer = 0

@@ -558,26 +558,24 @@ Namespace IMDB
 
 mPlot:
                     'Get the full Plot
-                    If Options.bPlot AndAlso (String.IsNullOrEmpty(IMDBMovie.Plot) OrElse Not Master.eSettings.LockPlot) Then
-                        If Not String.IsNullOrEmpty(ofdbPlot) Then
-                            IMDBMovie.Plot = ofdbPlot
-                        Else
-                            Dim FullPlotP As String = Regex.Match(PlotHtml, "<p class=.plotpar.>(.*?)</p>", RegexOptions.Singleline Or RegexOptions.IgnoreCase Or RegexOptions.Multiline).Groups(1).Value.ToString.Trim
-                            Dim FullPlotI As String = Regex.Match(PlotHtml, "<p class=.plotpar.>(.*?)<i>", RegexOptions.Singleline Or RegexOptions.IgnoreCase Or RegexOptions.Multiline).Groups(1).Value.ToString.Trim
-                            Dim FullPlot As String = If(FullPlotI.Length < FullPlotP.Length, FullPlotI, FullPlotP)
-                            If Not String.IsNullOrEmpty(FullPlot) Then
-                                For Each rMatch As Match In Regex.Matches(FullPlot, HREF_PATTERN_4)
-                                    FullPlot = FullPlot.Replace(rMatch.Value, rMatch.Groups("text").Value.Trim)
-                                Next
-                                IMDBMovie.Plot = Web.HttpUtility.HtmlDecode(FullPlot.Replace("|", String.Empty)).Trim
-                            End If
+                If Options.bPlot AndAlso (String.IsNullOrEmpty(IMDBMovie.Plot) OrElse Not Master.eSettings.LockPlot) Then
+                    If Not String.IsNullOrEmpty(ofdbPlot) Then
+                        IMDBMovie.Plot = ofdbPlot
+                    Else
+                        Dim FullPlotS As String = Regex.Match(PlotHtml, "<p class=""plotSummary"">(.*?)</p>", RegexOptions.Singleline Or RegexOptions.IgnoreCase Or RegexOptions.Multiline).Groups(1).Value.ToString.Trim
+                        Dim FullPlotO As String = Regex.Match(PlotHtml, "<li class=""odd"">\s*<p>(.*?)<br/>", RegexOptions.Singleline Or RegexOptions.IgnoreCase Or RegexOptions.Multiline).Groups(1).Value.ToString.Trim
+                        Dim FullPlotE As String = Regex.Match(PlotHtml, "<li class=""even"">\s*<p>(.*?)<br/>", RegexOptions.Singleline Or RegexOptions.IgnoreCase Or RegexOptions.Multiline).Groups(1).Value.ToString.Trim
+                        Dim FullPlot As String = If(Not String.IsNullOrEmpty(FullPlotS), FullPlotS, If(Not String.IsNullOrEmpty(FullPlotO), FullPlotO, FullPlotE))
+                        FullPlot = Regex.Replace(FullPlot, "<a(.*?)>", "")
+                        FullPlot = Regex.Replace(FullPlot, "</a>", "")
+                        IMDBMovie.Plot = FullPlot
 
-                        End If
-
-                        If Master.eSettings.OutlineForPlot AndAlso String.IsNullOrEmpty(IMDBMovie.Plot) AndAlso Not String.IsNullOrEmpty(IMDBMovie.Outline) Then
-                            IMDBMovie.Plot = IMDBMovie.Outline
-                        End If
                     End If
+
+                    If Master.eSettings.OutlineForPlot AndAlso String.IsNullOrEmpty(IMDBMovie.Plot) AndAlso Not String.IsNullOrEmpty(IMDBMovie.Outline) Then
+                        IMDBMovie.Plot = IMDBMovie.Outline
+                    End If
+                End If
 
                     If bwIMDB.CancellationPending Then Return Nothing
 
@@ -899,16 +897,16 @@ mPlot:
 
                 Dim D, W As Integer
 
-                D = HTML.IndexOf("<h5><a name=""akas"">Also Known As (AKA)</a></h5>")
+                D = HTML.IndexOf("<h4 class=""li_group"">Also Known As (AKA)&nbsp;</h4>")
 
                 If D > 0 Then
                     W = HTML.IndexOf("</table>", D)
                     Dim rTitles As MatchCollection = Regex.Matches(HTML.Substring(D, W - D), TD_PATTERN_4, RegexOptions.Multiline Or RegexOptions.IgnorePatternWhitespace)
 
                     If rTitles.Count > 0 Then
-                        For i As Integer = 1 To rTitles.Count - 1 Step 2
+                        For i As Integer = 0 To rTitles.Count - 1 Step 2
                             If rTitles(i).Value.ToString.Contains(Master.eSettings.ForceTitle) AndAlso Not rTitles(i).Value.ToString.Contains(String.Concat(Master.eSettings.ForceTitle, " (working title)")) AndAlso Not rTitles(i).Value.ToString.Contains(String.Concat(Master.eSettings.ForceTitle, " (fake working title)")) Then
-                                fTitle = CleanTitle(Web.HttpUtility.HtmlDecode(rTitles(i - 1).Groups("title").Value.ToString.Trim))
+                                fTitle = CleanTitle(Web.HttpUtility.HtmlDecode(rTitles(i + 1).Groups("title").Value.ToString.Trim))
                                 Exit For
                             End If
                         Next
@@ -962,7 +960,8 @@ mPlot:
                     If D <= 0 Then GoTo mPartial
                     W = HTMLp.IndexOf("</table>", D) + 8
 
-                    Dim Table As String = Regex.Match(HTML.Substring(D, W - D), TABLE_PATTERN).ToString
+                    Dim Table = String.Empty
+                    Table = Regex.Match(HTML.Substring(D, W - D), TABLE_PATTERN).ToString
 
                     Dim qPopular = From Mtr In Regex.Matches(Table, TITLE_PATTERN) _
                                    Where Not DirectCast(Mtr, Match).Groups("name").ToString.Contains("<img") AndAlso Not DirectCast(Mtr, Match).Groups("type").ToString.Contains("VG") _

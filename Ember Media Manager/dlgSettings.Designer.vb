@@ -364,6 +364,7 @@ Partial Class dlgSettings
         Me.gbShowListOptions = New System.Windows.Forms.GroupBox()
         Me.chkShowNfoCol = New System.Windows.Forms.CheckBox()
         Me.chkShowFanartCol = New System.Windows.Forms.CheckBox()
+        Me.chkShowBannerCol = New System.Windows.Forms.CheckBox()
         Me.chkShowPosterCol = New System.Windows.Forms.CheckBox()
         Me.gbShowsMiscellaneous = New System.Windows.Forms.GroupBox()
         Me.chkMarkNewShows = New System.Windows.Forms.CheckBox()
@@ -621,6 +622,7 @@ Partial Class dlgSettings
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.lblHelp = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.chkNoDisplayBanner = New System.Windows.Forms.CheckBox()
         Me.gbGeneralMiscellaneous.SuspendLayout()
         Me.GroupBox29.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -733,6 +735,7 @@ Partial Class dlgSettings
         '
         'gbGeneralMiscellaneous
         '
+        Me.gbGeneralMiscellaneous.Controls.Add(Me.chkNoDisplayBanner)
         Me.gbGeneralMiscellaneous.Controls.Add(Me.chkNoDisplayFanartSmall)
         Me.gbGeneralMiscellaneous.Controls.Add(Me.chkPosterGlassOverlay)
         Me.gbGeneralMiscellaneous.Controls.Add(Me.chkSpecialDateAdd)
@@ -769,7 +772,7 @@ Partial Class dlgSettings
         '
         Me.chkPosterGlassOverlay.AutoSize = True
         Me.chkPosterGlassOverlay.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkPosterGlassOverlay.Location = New System.Drawing.Point(10, 194)
+        Me.chkPosterGlassOverlay.Location = New System.Drawing.Point(10, 210)
         Me.chkPosterGlassOverlay.Name = "chkPosterGlassOverlay"
         Me.chkPosterGlassOverlay.Size = New System.Drawing.Size(167, 17)
         Me.chkPosterGlassOverlay.TabIndex = 11
@@ -780,7 +783,7 @@ Partial Class dlgSettings
         '
         Me.chkSpecialDateAdd.AutoSize = True
         Me.chkSpecialDateAdd.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkSpecialDateAdd.Location = New System.Drawing.Point(10, 228)
+        Me.chkSpecialDateAdd.Location = New System.Drawing.Point(10, 244)
         Me.chkSpecialDateAdd.Name = "chkSpecialDateAdd"
         Me.chkSpecialDateAdd.Size = New System.Drawing.Size(196, 17)
         Me.chkSpecialDateAdd.TabIndex = 10
@@ -791,7 +794,7 @@ Partial Class dlgSettings
         '
         Me.chkShowGenresText.AutoSize = True
         Me.chkShowGenresText.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkShowGenresText.Location = New System.Drawing.Point(10, 211)
+        Me.chkShowGenresText.Location = New System.Drawing.Point(10, 227)
         Me.chkShowGenresText.Name = "chkShowGenresText"
         Me.chkShowGenresText.Size = New System.Drawing.Size(166, 17)
         Me.chkShowGenresText.TabIndex = 9
@@ -814,7 +817,7 @@ Partial Class dlgSettings
         '
         Me.chkNoDisplayFanart.AutoSize = True
         Me.chkNoDisplayFanart.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkNoDisplayFanart.Location = New System.Drawing.Point(10, 160)
+        Me.chkNoDisplayFanart.Location = New System.Drawing.Point(10, 176)
         Me.chkNoDisplayFanart.Name = "chkNoDisplayFanart"
         Me.chkNoDisplayFanart.Size = New System.Drawing.Size(139, 17)
         Me.chkNoDisplayFanart.TabIndex = 7
@@ -847,7 +850,7 @@ Partial Class dlgSettings
         '
         Me.chkShowDims.AutoSize = True
         Me.chkShowDims.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkShowDims.Location = New System.Drawing.Point(10, 177)
+        Me.chkShowDims.Location = New System.Drawing.Point(10, 193)
         Me.chkShowDims.Name = "chkShowDims"
         Me.chkShowDims.Size = New System.Drawing.Size(160, 17)
         Me.chkShowDims.TabIndex = 8
@@ -2430,7 +2433,7 @@ Partial Class dlgSettings
         Me.pnlGeneral.BackColor = System.Drawing.Color.White
         Me.pnlGeneral.Controls.Add(Me.gbGeneralInterface)
         Me.pnlGeneral.Controls.Add(Me.gbGeneralMiscellaneous)
-        Me.pnlGeneral.Location = New System.Drawing.Point(251, 147)
+        Me.pnlGeneral.Location = New System.Drawing.Point(900, 900)
         Me.pnlGeneral.Name = "pnlGeneral"
         Me.pnlGeneral.Size = New System.Drawing.Size(635, 435)
         Me.pnlGeneral.TabIndex = 10
@@ -3650,19 +3653,16 @@ Partial Class dlgSettings
         'gbShowBanner
         '
         Me.gbShowBanner.Controls.Add(Me.chkShowBannerJPG)
-        Me.gbShowBanner.Enabled = False
         Me.gbShowBanner.Location = New System.Drawing.Point(5, 204)
         Me.gbShowBanner.Name = "gbShowBanner"
         Me.gbShowBanner.Size = New System.Drawing.Size(133, 40)
         Me.gbShowBanner.TabIndex = 2
         Me.gbShowBanner.TabStop = False
         Me.gbShowBanner.Text = "Show Banner"
-        Me.gbShowBanner.Visible = False
         '
         'chkShowBannerJPG
         '
         Me.chkShowBannerJPG.AutoSize = True
-        Me.chkShowBannerJPG.Enabled = False
         Me.chkShowBannerJPG.Font = New System.Drawing.Font("Segoe UI", 8.25!)
         Me.chkShowBannerJPG.Location = New System.Drawing.Point(6, 15)
         Me.chkShowBannerJPG.Name = "chkShowBannerJPG"
@@ -3670,7 +3670,6 @@ Partial Class dlgSettings
         Me.chkShowBannerJPG.TabIndex = 0
         Me.chkShowBannerJPG.Text = "banner.jpg"
         Me.chkShowBannerJPG.UseVisualStyleBackColor = True
-        Me.chkShowBannerJPG.Visible = False
         '
         'gbAllSeasonPoster
         '
@@ -4354,7 +4353,7 @@ Partial Class dlgSettings
         Me.gbShowMediaList.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
         Me.gbShowMediaList.Location = New System.Drawing.Point(6, 150)
         Me.gbShowMediaList.Name = "gbShowMediaList"
-        Me.gbShowMediaList.Size = New System.Drawing.Size(219, 258)
+        Me.gbShowMediaList.Size = New System.Drawing.Size(219, 272)
         Me.gbShowMediaList.TabIndex = 1
         Me.gbShowMediaList.TabStop = False
         Me.gbShowMediaList.Text = "Media List Options"
@@ -4363,7 +4362,7 @@ Partial Class dlgSettings
         '
         Me.chkDisplayMissingEpisodes.AutoSize = True
         Me.chkDisplayMissingEpisodes.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkDisplayMissingEpisodes.Location = New System.Drawing.Point(8, 234)
+        Me.chkDisplayMissingEpisodes.Location = New System.Drawing.Point(8, 252)
         Me.chkDisplayMissingEpisodes.Name = "chkDisplayMissingEpisodes"
         Me.chkDisplayMissingEpisodes.Size = New System.Drawing.Size(155, 17)
         Me.chkDisplayMissingEpisodes.TabIndex = 3
@@ -4377,7 +4376,7 @@ Partial Class dlgSettings
         Me.gbEpisodeListOptions.Controls.Add(Me.chkEpisodeFanartCol)
         Me.gbEpisodeListOptions.Controls.Add(Me.chkEpisodePosterCol)
         Me.gbEpisodeListOptions.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
-        Me.gbEpisodeListOptions.Location = New System.Drawing.Point(10, 143)
+        Me.gbEpisodeListOptions.Location = New System.Drawing.Point(10, 156)
         Me.gbEpisodeListOptions.Name = "gbEpisodeListOptions"
         Me.gbEpisodeListOptions.Size = New System.Drawing.Size(199, 86)
         Me.gbEpisodeListOptions.TabIndex = 2
@@ -4433,7 +4432,7 @@ Partial Class dlgSettings
         Me.gbSeasonListOptions.Controls.Add(Me.chkSeasonFanartCol)
         Me.gbSeasonListOptions.Controls.Add(Me.chkSeasonPosterCol)
         Me.gbSeasonListOptions.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
-        Me.gbSeasonListOptions.Location = New System.Drawing.Point(10, 87)
+        Me.gbSeasonListOptions.Location = New System.Drawing.Point(10, 100)
         Me.gbSeasonListOptions.Name = "gbSeasonListOptions"
         Me.gbSeasonListOptions.Size = New System.Drawing.Size(199, 52)
         Me.gbSeasonListOptions.TabIndex = 1
@@ -4466,11 +4465,12 @@ Partial Class dlgSettings
         '
         Me.gbShowListOptions.Controls.Add(Me.chkShowNfoCol)
         Me.gbShowListOptions.Controls.Add(Me.chkShowFanartCol)
+        Me.gbShowListOptions.Controls.Add(Me.chkShowBannerCol)
         Me.gbShowListOptions.Controls.Add(Me.chkShowPosterCol)
         Me.gbShowListOptions.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
         Me.gbShowListOptions.Location = New System.Drawing.Point(9, 16)
         Me.gbShowListOptions.Name = "gbShowListOptions"
-        Me.gbShowListOptions.Size = New System.Drawing.Size(199, 68)
+        Me.gbShowListOptions.Size = New System.Drawing.Size(199, 83)
         Me.gbShowListOptions.TabIndex = 0
         Me.gbShowListOptions.TabStop = False
         Me.gbShowListOptions.Text = "Shows"
@@ -4479,7 +4479,7 @@ Partial Class dlgSettings
         '
         Me.chkShowNfoCol.AutoSize = True
         Me.chkShowNfoCol.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkShowNfoCol.Location = New System.Drawing.Point(7, 48)
+        Me.chkShowNfoCol.Location = New System.Drawing.Point(7, 46)
         Me.chkShowNfoCol.Name = "chkShowNfoCol"
         Me.chkShowNfoCol.Size = New System.Drawing.Size(117, 17)
         Me.chkShowNfoCol.TabIndex = 2
@@ -4490,12 +4490,23 @@ Partial Class dlgSettings
         '
         Me.chkShowFanartCol.AutoSize = True
         Me.chkShowFanartCol.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkShowFanartCol.Location = New System.Drawing.Point(7, 32)
+        Me.chkShowFanartCol.Location = New System.Drawing.Point(7, 31)
         Me.chkShowFanartCol.Name = "chkShowFanartCol"
         Me.chkShowFanartCol.Size = New System.Drawing.Size(129, 17)
         Me.chkShowFanartCol.TabIndex = 1
         Me.chkShowFanartCol.Text = "Hide Fanart Column"
         Me.chkShowFanartCol.UseVisualStyleBackColor = True
+        '
+        'chkShowBannerCol
+        '
+        Me.chkShowBannerCol.AutoSize = True
+        Me.chkShowBannerCol.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkShowBannerCol.Location = New System.Drawing.Point(7, 62)
+        Me.chkShowBannerCol.Name = "chkShowBannerCol"
+        Me.chkShowBannerCol.Size = New System.Drawing.Size(133, 17)
+        Me.chkShowBannerCol.TabIndex = 0
+        Me.chkShowBannerCol.Text = "Hide Banner Column"
+        Me.chkShowBannerCol.UseVisualStyleBackColor = True
         '
         'chkShowPosterCol
         '
@@ -7311,7 +7322,7 @@ Partial Class dlgSettings
         Me.cbCert.Enabled = False
         Me.cbCert.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
         Me.cbCert.FormattingEnabled = True
-        Me.cbCert.Items.AddRange(New Object() {"Argentina", "Australia", "Belgium", "Brazil", "Canada", "Finland", "France", "Germany", "Hong Kong", "Iceland", "Ireland", "Netherlands", "New Zealand", "Peru", "Portugal", "Singapore", "South Korea", "Spain", "Sweden", "Switzerland", "UK", "USA"})
+        Me.cbCert.Items.AddRange(New Object() {"Argentina", "Australia", "Belgium", "Brazil", "Canada", "Finland", "France", "Germany", "Hong Kong", "Hungary", "Iceland", "Ireland", "Netherlands", "New Zealand", "Peru", "Poland", "Portugal", "Serbia", "Singapore", "South Korea", "Spain", "Sweden", "Switzerland", "Turkey", "UK", "USA"})
         Me.cbCert.Location = New System.Drawing.Point(175, 124)
         Me.cbCert.Name = "cbCert"
         Me.cbCert.Size = New System.Drawing.Size(108, 21)
@@ -7395,6 +7406,17 @@ Partial Class dlgSettings
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(636, 69)
         Me.Panel2.TabIndex = 8
+        '
+        'chkNoDisplayBanner
+        '
+        Me.chkNoDisplayBanner.AutoSize = True
+        Me.chkNoDisplayBanner.Font = New System.Drawing.Font("Segoe UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkNoDisplayBanner.Location = New System.Drawing.Point(10, 160)
+        Me.chkNoDisplayBanner.Name = "chkNoDisplayBanner"
+        Me.chkNoDisplayBanner.Size = New System.Drawing.Size(143, 17)
+        Me.chkNoDisplayBanner.TabIndex = 13
+        Me.chkNoDisplayBanner.Text = "Do Not Display Banner"
+        Me.chkNoDisplayBanner.UseVisualStyleBackColor = True
         '
         'dlgSettings
         '
@@ -8200,4 +8222,6 @@ Partial Class dlgSettings
     Friend WithEvents txtEPRuntimeFormat As System.Windows.Forms.TextBox
     Friend WithEvents chkUseEPDuration As System.Windows.Forms.CheckBox
     Friend WithEvents chkNoDisplayFanartSmall As System.Windows.Forms.CheckBox
+    Friend WithEvents chkShowBannerCol As System.Windows.Forms.CheckBox
+    Friend WithEvents chkNoDisplayBanner As System.Windows.Forms.CheckBox
 End Class
