@@ -54,6 +54,7 @@ Public Class Scanner
         'sPath = Strings.Replace(sPath, Regex.Match(sPath, regex).ToString, String.Empty)
         sPath = Strings.Replace(sPath, "-480p", String.Empty)
         sPath = Strings.Replace(sPath, "-720p", String.Empty)
+        sPath = Strings.Replace(sPath, "-x264", String.Empty)
 
         For Each rShow As Settings.TVShowRegEx In Master.eSettings.TVShowRegexes
             Try
