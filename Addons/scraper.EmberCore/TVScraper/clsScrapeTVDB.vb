@@ -1168,7 +1168,7 @@ Public Class Scraper
                                             .displaySEset = True
                                         End If
                                         If Not IsNothing(xE.Element("airsbefore_episode")) AndAlso Not String.IsNullOrEmpty(xE.Element("airsbefore_episode").Value) Then
-                                            .DisplayEpisode = Convert.ToInt32(CLng(xE.Element("airsbefore_episode").Value)) - 1
+                                            .DisplayEpisode = Convert.ToInt32(CLng(xE.Element("airsbefore_episode").Value))
                                             .displaySEset = True
                                         End If
                                         If sInfo.Options.bEpAired Then .Aired = If(IsNothing(xE.Element("FirstAired")), .Aired, xE.Element("FirstAired").Value)
